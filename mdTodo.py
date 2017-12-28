@@ -37,15 +37,16 @@ class MdTodoDoneCommand(MdTodoBase):
             lines = self.view.lines(region)
             lines.reverse()
             for line in lines:
+                line_head = self.view.find("\* \[[ x] \]", line.begin())
                 line_contents = self.view.substr(line).strip()
                 # prepend @done if item is ongoing
                 if line_contents.startswith('* [ ]'):
                     self.view.insert(edit,
                                      line.end(), " @done (%s)" %
                                      datetime.now().strftime("%Y-%m-%d %H:%M"))
-                    self.view.replace(edit, "* [ ]", "* [x]")
+                    self.view.replace(edit, line_head, "* [x]")
                 # undo @todo
                 elif line_contents.startswith('* [x] '):
                     subfix = self.view.find('(\s)*@done(.)+\)$', line.begin())
                     self.view.erase(edit, subfix)
-                    self.view.replace(edit, "* [x]", "* [ ]")
+                    self.view.replace(edit, line_head, "* [ ]")
