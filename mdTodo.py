@@ -43,7 +43,7 @@ class MdTodoDoneCommand(MdTodoBase):
                     self.view.insert(edit,
                                      line.end(), " @done (%s)" %
                                      datetime.now().strftime("%Y-%m-%d %H:%M"))
-                    self.view.replace(edit, "* [ ] , "* [x] ")
+                    self.view.replace(edit, "* [ ] ", "* [x] ")
                 # undo @todo
                 elif line_contents.startswith('* [x] '):
                     subfix = self.view.find('(\s)*@done(.)+\)$', line.begin())
