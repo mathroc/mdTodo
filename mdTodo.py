@@ -23,11 +23,11 @@ class MdTodoNewCommand(MdTodoBase):
             for line in lines:
                 # don't add a newline when creating new item with cursor is at an empty line
                 if not line:
-                    line_contents = '- '
+                    line_contents = '* [ ] '
                     self.view.insert(edit, line.begin(), line_contents)
                 # add a newline when creating new item when cursor is at another line
                 else:
-                    line_contents = self.view.substr(line) + '\n- '
+                    line_contents = self.view.substr(line) + '\n* [ ] '
                     self.view.replace(edit, line, line_contents)
 
 
@@ -37,16 +37,15 @@ class MdTodoDoneCommand(MdTodoBase):
             lines = self.view.lines(region)
             lines.reverse()
             for line in lines:
-                line_head = self.view.find("[-\+]", line.begin())
                 line_contents = self.view.substr(line).strip()
                 # prepend @done if item is ongoing
-                if line_contents.startswith('-'):
+                if line_contents.startswith('* [ ] '):
                     self.view.insert(edit,
                                      line.end(), " @done (%s)" %
                                      datetime.now().strftime("%Y-%m-%d %H:%M"))
-                    self.view.replace(edit, line_head, "+")
+                    self.view.replace(edit, "* [ ] , "* [x] ")
                 # undo @todo
-                elif line_contents.startswith('+'):
+                elif line_contents.startswith('* [x] '):
                     subfix = self.view.find('(\s)*@done(.)+\)$', line.begin())
                     self.view.erase(edit, subfix)
-                    self.view.replace(edit, line_head, "-")
+                    self.view.replace(edit, "* [x] ", "* [ ] ")
