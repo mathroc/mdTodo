@@ -37,7 +37,7 @@ class MdTodoDoneCommand(MdTodoBase):
             lines = self.view.lines(region)
             lines.reverse()
             for line in lines:
-                line_head = self.view.find("\* \[[ x] \]", line.begin())
+                line_head = self.view.find(".....", line.begin())
                 line_contents = self.view.substr(line).strip()
                 # prepend @done if item is ongoing
                 if line_contents.startswith('* [ ]'):
